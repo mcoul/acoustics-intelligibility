@@ -1,0 +1,395 @@
+\subsection{Objetivo}
+
+	Para la segunda etapa, se desea calcular los tiempos de reverberación óptimos y diseñar el tratamiento acústico de la sala, teniendo en cuenta que la misma va a ser utilizada para la palabra. También se requiere calcular la inteligibilidad de palabra.
+
+%%%% 1) Trev optimos dado V y destino, y banda de tolerancia 
+%%%% 2) Trev sala desocupada, en octavas entre 125 y 4k
+%%%% 3) Porcentaje de ocupación elegido para el cálculo
+%%%% 4) Cálculo TR considerando el criterio de ocupación elegido
+%%%% 5) Lista de materiales para ese TR (tipo, cantidad, ubicación)
+%%%% 6) Trev logrados con diseño final y el estado de ocupación elegido
+%%%% 7) Analizar si todas las filas se encuentran a partir de la distancia crítica
+%%%% 8) Analizar la importancia de cumplir esta condición en tal recinto
+%%%% 9) Cálculo de IL
+%%%% 10) Esquema final de la planta si hubo variación
+
+\subsection{Cálculo del tiempo de reverberación óptimo}
+
+	Dados el volumen y el destino, se presenta en la Tabla \ref{tabla:tr_óptimo} el tiempo de reverberación óptimo calculado para cada  octava, entre los \SI{125}{\Hz} y los \SI{4}{\k\Hz}, junto con sus bandas de tolerancia (elegida como criterio de diseño).
+	
+		\begin{table}[h!]
+			\centering
+			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{ccccc}
+			\toprule
+			\textbf{Frecuencia [Hz]} & \textbf{TR\textsubscript{óptimo}} & \textbf{TR\textsubscript{o} - 20\%} & \textbf{TR\textsubscript{o}} & \textbf{TR\textsubscript{o} + 20\%}\\
+			\midrule
+			\textbf{125} & \textbf{$0.41 + 0.26\,\log_{10}\,V$} & \SI{0.877}{\s} & \SI{1.097}{\s} & \SI{1.316}{\s}\\
+			\midrule
+			\textbf{250} & \textbf{$0.32 + 0.21\,\log_{10}\,V$} & \SI{0.699}{\s} & \SI{0.875}{\s} & \SI{1.050}{\s}\\
+			\midrule
+			\textbf{$\geq$500} & \textbf{$0.28 + 0.18\,\log_{10}\,V$} & \SI{0.604}{\s} & \SI{0.756}{\s} & \SI{0.907}{\s}\\
+			\bottomrule
+			\end{tabular}
+			}
+			\caption{Tiempo de reverberación óptimo calculado, junto con sus respectivas bandas de tolerancia, en función de la frecuencia.}
+			\label{tabla:tr_óptimo}
+		\end{table}
+	
+	Cabe destacar que existen diversos criterios de diseño (basados en modelos matemáticos empíricos) y no hay uniformidad de opinión entre los autores de la bibliografía especializada. Se desea que el tiempo de reverberación calculado para esta sala se encuentre dentro del límite de tolerancia del $20\%$ del valor de este tiempo de reverberación óptimo obtenido.
+
+\subsection{Selección de materiales}
+
+	Se elige el tipo de material con que estarán construidas las superficies interiores del recinto (la dimensión de las puertas y butacas elegidas está detallada en la Parte I del informe). Los datos de los coeficientes de absorción se obtienen a partir de tablas construidas por Leo Beranek, facilitadas por la cátedra:
+	
+		\begin{table}[H]
+			\centering
+%			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{ccc}
+			\toprule
+			\textbf{Tipo de superficie} & \textbf{Material} & \textbf{Superficie total}\\
+			\midrule
+			Piso & Parqué pegado & \SI{89.46}{\square\m}\\
+			\midrule
+			Techo & Hormigón & \SI{89.46}{\square\m}\\
+			\midrule
+			Pared & Papel pintado & \SI{193.508}{\square\m}\\
+			\midrule
+			Puerta & Madera maciza & \SI{7.392}{\square\m}\\
+			\bottomrule
+			\end{tabular}
+%			}
+			\caption{Tipos de materiales elegidos para las superficies interiores de la sala y la superficie que cubre cada uno.}
+			\label{tabla:superficies}
+		\end{table}
+		
+		Los cálculos de la Tabla \ref{tabla:superficies} se realizan teniendo en cuenta que el piso y el techo cubren la misma superficie, de \texttt{\SI{14.2}{\m}$\times$\SI{6.3}{\m} = \SI{89.46}{\square\m}} cada uno; las puertas tienen una superficie de \texttt{2$\times$\SI{1.76}{\m}$\times$\SI{2.10}{\m} = \SI{7.392}{\square\m}} entre las dos; las paredes se calculan teniendo en cuenta que son 2 pares de superficies iguales menos la superficie de las puertas, es decir \texttt{2$\times$\SI{14.2}{\m}$\times$\SI{4.9}{\m} + 2$\times$\SI{6.3}{\m}$\times$\SI{4.9}{\m} - \SI{7.392}{\square\m} = \SI{193.508}{\square\m}}.\\
+		
+		Para los materiales elegidos, se informa en la Tabla \ref{tabla:coeficientes_sola} sus coeficientes de absorción sonora en cada banda de frecuencia de interés:
+		
+			\begin{table}[H]
+			\centering
+%			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{@{}ccccccc@{}}
+				 & \multicolumn{6}{c}{\textbf{Coeficiente de absorción ($\alpha$)}}\\ \toprule
+				\textbf{Frecuencia (Hz)} & \textbf{125} & \textbf{250} & \textbf{500} & \textbf{1k} & \textbf{2k} & \textbf{4k}   \\ \midrule
+					Piso                & 0.03 & 0.04 & 0.08 & 0.12 & 0.12 & 0.17 \\ \midrule
+					Techo               & 0.01 & 0.01 & 0.02 & 0.02 & 0.05 & 0.07 \\ \midrule
+					Pared               & 0.01 & 0.02 & 0.04 & 0.10 & 0.20 & 0.30 \\ \midrule
+					Puerta              & 0.05 & 0.11 & 0.10 & 0.09 & 0.08 & 0.10 \\ \bottomrule
+			\end{tabular}%
+%			}
+			\caption{Coeficientes de absorción de los materiales de la sala.}
+			\label{tabla:coeficientes_sola}
+		\end{table}
+		
+		A partir de los datos de las Tablas \ref{tabla:superficies} y \ref{tabla:coeficientes_sola}, el área equivalente del recinto se calcula según la siguiente expresión:
+		
+		\begin{equation}
+			A_{sala_{sola}} = A_{piso} + A_{techo} + A_{paredes} + A_{puertas}
+		\end{equation}
+		
+		Las áreas equivalentes de las superficies se calculan a partir del producto entre la superficie y el coeficiente de absorción. Con este valor dado para cada octava considerada, se calcula el tiempo de reverberación según:
+
+		\begin{equation}
+			TR_{sala_{sola}} = 0.161 \, \frac{V}{A_{sala_{sola}}}
+		\end{equation}
+		
+		En la Tabla \ref{tabla:tr_finales_sola} se muestra el tiempo de reverberación resultante en cada banda de frecuencia para la sala vacía y sin muebles (mesa de oradores, butacas y tarimas):
+		
+		\begin{table}[H]
+			\centering
+%			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{@{}clcccccc@{}}
+				& \textbf{Frecuencia [Hz]} & \textbf{125} & \textbf{250} & \textbf{500} & \textbf{1k} & \textbf{2k} & \textbf{4k}   \\ \toprule
+				\multirow{6}{*}{\textbf{\rotatebox[origin=c]{90}{\parbox{2.2cm}{\;Tiempo de reverber [s]}}}} & \textbf{Óptimo - 20\%}		& 0.878 & 0.700 & 0.605 & 0.605 & 0.605 & 0.605 \\ \cmidrule{2-8}
+					& \textbf{Óptimo}				& 1.097 & 0.875 & 0.756 & 0.756 & 0.756 & 0.756 \\ \cmidrule{2-8}
+					& \textbf{Óptimo + 20\%}		& 1.316 & 1.050 & 0.907 & 0.907 & 0.907 & 0.907 \\ \cmidrule{2-8}
+					& \textbf{Sala vacía y sin muebles}				& 11.996 & 7.708 & 4.050 & 2.169 & 1.295 & 0.879 \\\bottomrule
+			\end{tabular}%
+%			}
+			\caption{Tabla de tiempos de reverberación de la sala sin muebles.}
+			\label{tabla:tr_finales_sola}
+		\end{table}
+		
+		Se grafican los tiempos calculados en la Figura \ref{TR_sola}:
+		
+		\HgraficarPNG{0.94}{TR_sola.png}{Curvas del tiempo de reverberación obtenido y del óptimo en función de la frecuencia, para la sala vacía y sin muebles.}{TR_sola}
+		
+		Se puede ver que, especialmente para el rango de frecuencias entre los \SI{100}{\Hz} y \SI{2}{k\Hz}, el tiempo de reverberación obtenido con la colocación de los materiales del techo, piso y paredes, pero sin muebles, se aleja considerablemente del tiempo óptimo. Para obtener un valor más cercano al deseado, se necesitan tiempos de reverberación más cortos, lo que implica mayores áreas equivalentes de absorción para cada octava; ese área equivalente resultante se logra agregando y modificando los muebles de la sala.\\
+		
+%%%%%%%%%%%%%%%%%% MUEBLES: BUTACAS Y MESA
+		
+		En la Tabla \ref{tabla:muebles} se detallan los muebles usados para la sala; el índice \textit{(2)} en las butacas se agrega para diferenciarla de la otra butaca que se provee en la tabla de datos del enunciado. La cantidad de butacas vacías y butacas ocupadas varía para cada caso de porcentaje de ocupación, pero en todos los casos suman 113 entre las dos, que es el total de asientos de espectadores y oradores de la sala. Aquí se muestra el caso para un 75\% de ocupación:
+
+		\begin{table}[H]
+			\centering
+%			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{ccc}
+			\toprule
+			\textbf{Tipo de mueble} & \textbf{Material} & \textbf{Cantidad}\\ \midrule
+			Butaca desocupada & Tapizada (2)& 28\\ \midrule
+			Butaca ocupada & Tapizada (2)& 85\\ \midrule
+			Mesa & Madera & 1\\ \bottomrule
+			\end{tabular}
+%			}
+			\caption{Tipos y cantidades de materiales elegidos para los muebles de la sala.}
+			\label{tabla:muebles}
+		\end{table}
+		
+		Se puede ver que las superficies se definen con su coeficiente de absorción, mientras que los objetos puntuales se definen con su área equivalente de absorción sonora, sin considerar la superficie de los mismos, como en la Tabla \ref{tabla:coeficientes_muebles}:
+		
+		\begin{table}[H]
+			\centering
+%			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{@{}ccccccc@{}}
+					& \multicolumn{6}{c}{\textbf{Área equivalente de abs ($A_{eq}$)}}\\ \toprule
+				\textbf{Frecuencia (Hz)} & \textbf{125} & \textbf{250} & \textbf{500} & \textbf{1k} & \textbf{2k} & \textbf{4k}   \\ \midrule
+					Butaca desocupada   & 0.12 & 0.23 & 0.27 & 0.30 & 0.33 & 0.33 \\ \midrule
+					Butaca ocupada      & 0.12 & 0.25 & 0.42 & 0.46 & 0.48 & 0.40 \\ \midrule
+					Mesa                & 0.02 & 0.02 & 0.02 & 0.02 & 0.02 & 0.02 \\ \bottomrule
+			\end{tabular}%
+%			}
+			\caption{Áreas equivalentes de absorción de los muebles de la sala.}
+			\label{tabla:coeficientes_muebles}
+		\end{table}
+
+\subsection{Porcentaje de ocupación}
+
+	Se debe elegir un porcentaje de ocupación con el que se desea lograr los tiempos de reverberación óptimos en el proyecto. Para este proyecto, se decide elegir un porcentaje del $75\%$\footnote{Un buen criterio puede ser elegir un p\% entre 70\% y 80\%, para tener en cuenta que la sala no suene \textit{muy reverberante}, aunque no esté completamente ocupada.}, que equivale a \texttt{85 butacas} ocupadas (se contemplan las 110 butacas de oyentes más 3 butacas para los oradores).\\
+	
+	Con esto dicho, se contemplan 3 casos al tiempo de analizar los tiempos de reverberación de la sala:
+	
+	\begin{itemize}
+		\item 0\% ocupación: 113 butacas desocupadas y 0 butacas ocupadas;
+		\item 75\% ocupación: 28 butacas desocupadas y 85 butacas ocupadas;
+		\item 100\% ocupación: 0 butacas desocupadas y 113 butacas ocupadas;
+	\end{itemize}
+
+\subsection{Cálculo del tiempo de reverberación inicial}
+
+%	Este cálculo se realiza tanto para la sala vacía como para la sala con el porcentaje de ocupación elegido, para cada octava considerada.
+	Con los datos de las Tablas \ref{tabla:muebles} y \ref{tabla:coeficientes_muebles}, se calculan las åreas equivalentes de la sala con muebles, para los 3 niveles de ocupación, según la siguiente expresión:
+	
+		\begin{align*}
+			A_{sala_{muebles}} &= A_{sala_{sola}} + A_{MESAS} +  \qquad A_{BUTACAS_{DESOCUP}} \qquad + \qquad A_{BUTACAS_{OCUP}}\\
+			A_{sala_{muebles}} &= A_{sala_{sola}} + N_{me}\,A_{me} + N_{butacas_{desocup}}\,A_{butacas_{desocup}} \,+ N_{butacas_{ocup}}\,A_{butacas_{ocup}}
+		\end{align*}
+	
+		Ese valor obtenido por cada octava considerada, sirve para calcular el tiempo de reverberación de la sala con muebles, para los 3 niveles de ocupación considerados:
+		
+		\begin{equation}
+			TR_{sala_{muebles}} = 0.161 \, \frac{V}{A_{sala_{muebles}}}
+		\end{equation}
+		
+		Los tiempos resultantes se informan en la Tabla \ref{tabla:tr_finales_muebles}:
+
+		\begin{table}[H]
+			\centering
+%			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{@{}clcccccc@{}}
+				& \textbf{Frecuencia [Hz]} & \textbf{125} & \textbf{250} & \textbf{500} & \textbf{1k} & \textbf{2k} & \textbf{4k}   \\ \toprule
+				\multirow{6}{*}{\textbf{\rotatebox[origin=c]{90}{\parbox{3.2cm}{\quad Tiempo de \\ reverberación [s]}}}} & \textbf{Óptimo - 20\%}		& 0.878 & 0.700 & 0.605 & 0.605 & 0.605 & 0.605 \\ \cmidrule{2-8}
+					& \textbf{Óptimo}				& 1.097 & 0.875 & 0.756 & 0.756 & 0.756 & 0.756 \\ \cmidrule{2-8}
+					& \textbf{Óptimo + 20\%}		& 1.316 & 1.050 & 0.907 & 0.907 & 0.907 & 0.907 \\ \cmidrule{2-8}
+					& \textbf{Ocupación 0\%}				& 3.626 & 2.007 & 1.472 & 1.062 & 0.769 & 0.600 \\ \cmidrule{2-8}
+					& \textbf{Ocupación 75\%}				& 3.626 & 1.914 & 1.163 & 0.882 & 0.675 & 0.571 \\ \cmidrule{2-8}
+					& \textbf{Ocupación 100\%}			& 3.626 & 1.886 & 1.087 & 0.835 & 0.649 & 0.562 \\ \bottomrule
+			\end{tabular}%
+%			}
+			\caption{Tabla de tiempos de reverberación de la sala con muebles, para distintos porcentajes de ocupación.}
+			\label{tabla:tr_finales_muebles}
+		\end{table}
+		
+		Se grafican estos valores en la Figura \ref{TRtodos_muebles} para poder analizar mejor los resultados:
+		
+		\HgraficarPNG{0.75}{TRtodos_muebles.png}{Curvas del tiempo de reverberación obtenido para la sala con muebles, evaluada con distintos grados de ocupación.}{TRtodos_muebles}
+		
+		El agregado de las butacas y la mesa para los oradores baja notablemente el tiempo de reverberación de la sala, aunque todavía no cumple con lo estipulado. Para los \SI{125}{\Hz}, el tiempo se reduce de \SI{12}{\s} a \SI{3.6}{\s}, aunque se desea bajarlo aún más. Como este tiempo no está dentro del rango de tiempo óptimo marcado, se debe acudir a un \texttt{tratamiento fonoabsorbente}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% FONO %%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Tratamiento acústico}
+		
+			Resulta necesario diseñar un tratamiento acústico con diversos fonoabsorbentes para ajustar los tiempos de reverberación en cada octava. Para los materiales fonoabsorbentes, se elige un cielorraso de panel de yeso acanalado, un panel de madera aglomerado y un resonador acústico de MDF con lana de vidrio.\\
+			
+			A continuación, en la Tabla \ref{tabla:fonos}, se detallan los 3 materiales elegidos:
+		
+		\begin{table}[H]
+			\centering
+%			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{ccc}
+			\toprule
+			\textbf{Tipo de superficie} & \textbf{Material} & \textbf{Superficie total}\\
+			\midrule
+			Cielorraso & Panel yeso acanalado & \SI{15}{\square\m}\\
+			\midrule
+			Panel & Madera aglomerado & \SI{50}{\square\m}\\
+			\midrule
+			Resonador & MDF + lana de vidrio & \SI{8}{\square\m}\\
+			\bottomrule
+			\end{tabular}
+%			}
+			\caption{Tipos y superficies de materiales elegidos para el tratamiento fonoabsorbente de la sala.}
+			\label{tabla:fonos}
+		\end{table}
+		
+		Los primeros 2 materiales figuran en la tabla provista por la cátedra (\emph{cielorraso 4: panel yeso acanalado + lana 50mm, 35 kg/m2 + 85cm aire} y \emph{Panel madera aglomerado 6 mm, sobre 50 mm lana de vidrio}), mientras que el resonador acústico se obtiene por otra fuente\footnote{http://www.insam.com.ar/index.php/productos/elaborados/resonador-acustico}; el motivo de este último es que se necesita absorber mucho más en las frecuencias bajas que en las agudas, y no se encontraron materiales de estas características en la tabla del enunciado.\\
+		
+		El criterio de distribución de los mismos se realiza de acuerdo al Código Técnico de la Edificación (CTE de España) para mejorar la inteligibilidad de la sala: en primer lugar se agrega material en el techo, cubriendo la parte trasera de la sala y dejando al menos \SI{3}{\m} de la parte frontal (la porción cercana a los oradores) sin material absorbente; la pared frontal (la de los oradores) actúa como superficie reflectante, mientras que la pared trasera, como superficie absorbente. Por este motivo, se elige el cielorraso para el techo, y luego el panel y el resonador se colocará en la porción trasera de las paredes laterales y a lo largo de la pared trasera.\\
+		
+		En la Tabla \ref{tabla:coeficientes_fonos} se muestran los coeficientes de absorción que aportan estos materiales en cada octava de frecuencias:
+		
+		\begin{table}[H]
+			\centering
+%			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{@{}ccccccc@{}}
+				 & \multicolumn{6}{c}{\textbf{Coeficiente de absorción ($\alpha$)}}\\ \toprule
+				\textbf{Frecuencia (Hz)} & \textbf{125} & \textbf{250} & \textbf{500} & \textbf{1k} & \textbf{2k} & \textbf{4k}   \\ \midrule
+					Cielorraso   & 0.56 & 0.60 & 1.00 & 0.83 & 0.49 & 0.31 \\ \midrule
+					Panel   & 0.61 & 0.65 & 0.24 & 0.12 & 0.10 & 0.06 \\ \midrule
+					Resonador   & 0.27 & 0.84 & 0.96 & 0.36 & 0.32 & 0.26 \\ \bottomrule
+			\end{tabular}%
+%			}
+			\caption{Tabla de coeficientes de absorción de los materiales fonoabsorbentes para la sala con acondicionamiento acústico.}
+			\label{tabla:coeficientes_fonos}
+		\end{table}		
+
+%%%%%%%%%%%%%% FINAL
+	
+%			\begin{table}[H]
+%			\centering
+%			\resizebox{\textwidth}{!}{%
+%			\begin{tabular}{@{}ccccccc@{}}
+%%				\cline{2-7}
+%				 & \multicolumn{6}{c}{\textbf{Coeficiente o área de absorción}}\\ \toprule
+%				\textbf{Frecuencia (Hz)} & \textbf{125} & \textbf{250} & \textbf{500} & \textbf{1k} & \textbf{2k} & \textbf{4k}   \\ \midrule
+%					Piso                & 0.03 & 0.04 & 0.08 & 0.12 & 0.12 & 0.17 \\ \midrule
+%					Techo               & 0.01 & 0.01 & 0.02 & 0.02 & 0.05 & 0.07 \\ \midrule
+%					Pared               & 0.01 & 0.02 & 0.04 & 0.10 & 0.20 & 0.30 \\ \midrule
+%					Puerta              & 0.05 & 0.11 & 0.10 & 0.09 & 0.08 & 0.10 \\ \midrule
+%					Butaca ocupada      & 0.12 & 0.25 & 0.42 & 0.46 & 0.48 & 0.40 \\ \midrule
+%					Butaca desocupada   & 0.12 & 0.23 & 0.27 & 0.30 & 0.33 & 0.33 \\ \midrule
+%					Mesa                & 0.02 & 0.02 & 0.02 & 0.02 & 0.02 & 0.02 \\ \midrule
+%					Cielorraso   & 0.56 & 0.60 & 1.00 & 0.83 & 0.49 & 0.31 \\ \midrule
+%					Panel   & 0.61 & 0.65 & 0.24 & 0.12 & 0.10 & 0.06 \\ \midrule
+%					Resonador   & 0.27 & 0.84 & 0.96 & 0.36 & 0.32 & 0.26 \\ \bottomrule
+%			\end{tabular}%
+%			}
+%			\caption{Tabla final de coeficientes y áreas equivalentes de absorción de los materiales y muebles de la sala con acondicionamiento acústico.}
+%			\label{tabla:coeficientes_finales}
+%		\end{table}
+		
+		En la Tabla \ref{tabla:superficies_finales} se recalculan los valores para todas las superficies y materiales implicados, ya que el agregado de los materiales fonoabsorbentes reduce la superficie del techo y paredes expuestas:
+		
+		\begin{table}[H]
+			\centering
+			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{ccc}
+			\toprule
+			\textbf{Tipo de superficie} & \textbf{Material} & \textbf{Superficie o Cantidad}\\ \midrule
+			Piso & Parqué pegado & \SI{89.46}{\square\m}\\ \midrule
+			Techo & Hormigón & \SI{74.46}{\square\m}\\ \midrule
+			Pared & Papel pintado & \SI{135.508}{\square\m}\\ \midrule
+			Puerta & Madera maciza & \SI{7.392}{\square\m}\\ \midrule
+			Butaca vacía & Tapizada (2)& 28 unidades\\ \midrule
+			Butaca ocupada & Tapizada (2)& 85 unidades\\ \midrule
+			Mesa & Madera & 1 unidad\\ \midrule
+			Cielorraso & Panel yeso acanalado & \SI{15}{\square\m}\\ \midrule
+			Panel & Madera aglomerado & \SI{50}{\square\m}\\ \midrule
+			Resonador & MDF + lana de vidrio & \SI{8}{\square\m}\\ \bottomrule
+			\end{tabular}%
+			}
+			\caption{Cantidades y superficies finales usadas para los materiales y muebles de la sala.}
+			\label{tabla:superficies_finales}
+		\end{table}
+		
+		Con estos valores finales de superficies y åreas equivalentes, se obtiene el tiempo de reverberación resultante del tratamiento acústico, como muestra la Tabla \ref{tabla:tr_finales_fono}:
+
+			\begin{table}[H]
+			\centering
+			\resizebox{\textwidth}{!}{%
+			\begin{tabular}{@{}clcccccc@{}}
+				& \textbf{Frecuencia [Hz]} & \textbf{125} & \textbf{250} & \textbf{500} & \textbf{1k} & \textbf{2k} & \textbf{4k}   \\ \toprule
+				\multirow{6}{*}{\textbf{\rotatebox[origin=c]{90}{\parbox{3.2cm}{\quad Tiempo de \\ reverberación [s]}}}} & \textbf{Óptimo - 20\%}		& 0.878 & 0.700 & 0.605 & 0.605 & 0.605 & 0.605 \\ \cmidrule{2-8}
+					& \textbf{Óptimo}				& 1.097 & 0.875 & 0.756 & 0.756 & 0.756 & 0.756 \\ \cmidrule{2-8}
+					& \textbf{Óptimo + 20\%}		& 1.316 & 1.050 & 0.907 & 0.907 & 0.907 & 0.907 \\ \cmidrule{2-8}
+					& \textbf{Ocupación 0\%}				& 1.195 & 0.871 & 0.893 & 0.875 & 0.757 & 0.656 \\ \cmidrule{2-8}
+					& \textbf{Ocupación 75\%}				& 1.195 & 0.853 & 0.770 & 0.750 & 0.667 & 0.622 \\ \cmidrule{2-8}
+					& \textbf{Ocupación 100\%}			& 1.195 & 0.847 & 0.737 & 0.716 & 0.642 & 0.612 \\ \bottomrule
+			\end{tabular}%
+			}
+			\caption{Tabla final de tiempos de reverberación de sala con acondicionamiento acústico, para distintos porcentajes de ocupación.}
+			\label{tabla:tr_finales_fono}
+		\end{table}
+		
+		Finalmente, se visualizan los tiempos de reverberación para los 3 casos en la Figura \ref{TRtodos_fono}:
+		
+		\HgraficarPNG{0.75}{TRtodos_fono.png}{Curvas del tiempo de reverberación obtenido para la sala con muebles y tratamiento acústico.}{TRtodos_fono}
+		
+		Los tiempos resultantes se encuentran dentro del margen esperado. Además, es importante notar que la curva de la sala con ocupación parcial (curva azul), sigue la naturaleza de la curva óptima y no pega saltos bruscos. 
+
+
+%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%
+%
+%	Para cada banda de frecuencias.\\
+%	Trabajo para f = \SI{1}{\kHz}, que es la frecuencia \emph{promedio} para el habla humana.\\
+\subsection{Inteligibilidad}
+
+	El parámetro de inteligibilidad es una medida que indica el nivel de entendimiento de las palabras emitidas. Como la media logarítmica del espectro de voz humana [\SI{100}{\Hz};\SI{1}{k\Hz};\SI{10}{k\Hz}] es de f = \SI{1}{\k\Hz}, se calcula la inteligibilidad para este valor. Primero se calcula la \textbf{distancia crítica} con la expresión:
+	
+	\begin{align*}
+		D_C &= 0.06\,\sqrt{\frac{QV}{T_{60}\,(1 - \bar{\alpha})}}\\
+		D_C &= 0.06\,\sqrt{\frac{2\times\SI{438.354}{\square\m}}{\SI{750}{\milli\s}\,(1 - \bar{\alpha})}}
+	\end{align*}
+		
+	Donde Q es la directividad de la fuente, que toma un valor de $Q = 2$ en el caso del habla humana\footnote{En general, cualquier fuente sonora radia más potencia en unas direcciones que en otras y, por tanto, presenta una cierta directividad. La directividad de la voz humana está determinada por el sistema de fonación y por la forma de la cabeza, siendo la dirección frontal la de mayor directividad; si bien la directividad aumenta con la frecuencia, a los efectos prácticos se considera que el factor de directividad de la voz humana en la dirección frontal es: $Q = 2$.}; $T_{60} =$ \SI{750}{\milli\s} es el tiempo de reverberación calculado según el modelo de Sabine, para \SI{1}{\k\Hz}; y $\bar{\alpha}$ se calcula según:
+%0.06*(sqrt((2*438.354)/(0.75*(1-0.251))))
+%3.16*0.06*(sqrt((2*438.354)/(0.75*(1-0.251))))
+
+	\begin{equation*}
+		\bar{\alpha} \approx \frac{A_3}{S_{sala}} = \frac{\SI{95.29}{\square\m}}{\SI{379.82}{\square\m}} = 0.251
+	\end{equation*}
+	
+	La distancia crítica resulta:
+	
+	\begin{equation*}
+		\boxed{D_C = \SI{2.37}{\m}}
+	\end{equation*}
+	
+	Una vez obtenida la distancia crítica, el porcentaje de pérdida de articulación de consonantes $\% AL$ es:
+
+	\begin{align*}
+		\% AL &= \frac{200\,d^2\,T_{60}^2}{QV} = 0.1283\,d^2, \quad d \leq 3.16\,D_C\\
+		\% AL &= 9\,T_{60}, = 6.75 \% \quad\quad\quad d > 3.16\, D_C
+	\end{align*}
+	
+%	100 - (7.49^2)*200*0.75^2/(2*438.354) = 92.801 \%
+
+	Con lo que se obtiene el porcentaje de inteligibilidad buscado:
+
+	\begin{align*}
+		\% IL &= 100\% - \% AL = 100\% - 0.1283\,d^2, \,\,\,\quad d \leq 3.16\,D_C = \SI{7.49}{\m}\\
+		\% IL &= 100\% - \% AL = 93.25\%, \qquad\qquad\qquad d > 3.16\, D_C = \SI{7.49}{\m}
+	\end{align*}
+	
+%	=100-0.1283*
+	%%% DESDE 1.8m hasta 11.4m
+	
+	Como criterio de diseño, el rango de distancias de interés es desde la distancia de los oradores hacia la primera fila, hasta la distancia hacia la última fila; se busca que tanto los oyentes más cercanos como los más lejanos escuchen con un $90\%$ de inteligibilidad o más.\\
+	
+	Además, a partir de la expresión de pérdida de articulación de consonantes, se puede observar que cuanto menor sea el $T_{60}$, menor será el $\%AL_{Cons}$, es decir, mayor inteligibilidad.\\
+	
+	Otra observación que se desprende es que el valor de $\%AL_{Cons}$ va aumentando a medida que el receptor se aleja de la fuente, hasta una distancia: $r = 3.16\,D_c$. Para distancias $r > 3.16\,D_c$, equivalentes a (LD - LR) < -10 dB, el valor de $\%AL_{Cons}$ tiende a ser constante. Ello significa que, a partir de ese punto, la inteligibilidad de la palabra ya no empeora con el aumento de la distancia.\\
+	
+	En la Figura \ref{curva_IL} se muestra el porcentaje de inteligibilidad en función de la distancia:
+	
+	\HgraficarPNG{0.75}{curva_IL.png}{Porcentaje de inteligibilidad en función de la distancia entre la fuente y el receptor.}{curva_IL}
+	
+	Si se observa el gráfico, se corrobora que la inteligibilidad va disminuyendo hasta cierta distancia, en la que se vuelve constante. Cuanto más cerca esté situado el receptor de la fuente sonora, mejor será la relación señal/ruido (mayor valor de LD-LR). La porción en rojo es una corrección muy simple para las distancias cercanas al empalme de la función partida, porque no tiene sentido la discontinuidad en el límite de $r = 3.16\,D_c$.\\
+	
+	Es importante destacar que la primera fila de oyentes se ubicará a unos \SI{2.60}{\m} de los oradores, que es una distancia mayor a la crítica (\SI{2.37}{\m}), por lo que cumplirán con la condición de campo reverberante.
